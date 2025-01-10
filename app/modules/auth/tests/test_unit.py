@@ -28,6 +28,18 @@ def test_login_success(test_client):
 
     test_client.get("/logout", follow_redirects=True)
 
+def test_login_count_users(test_client):
+
+    count_before = UserRepository().count()
+    response = test_client.post(
+        "/login", data=dict(email="test@example.com", password="test1234"), follow_redirects=True
+    )
+    count_after = UserRepository().count()
+
+    assert count_before == count_after, "Login was unsuccessful"
+
+    test_client.get("/logout", follow_redirects=True)
+
 def test_login_unsuccessful_empty(test_client):
     response = test_client.post(
         "/login", data=dict(email="", password=""), follow_redirects=True
